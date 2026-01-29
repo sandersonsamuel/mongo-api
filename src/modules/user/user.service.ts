@@ -1,0 +1,56 @@
+import { CreateUserDtoType, LoginUserDtoType } from "@/modules/user/user.dto";
+import { IUserRepository } from "@/modules/user/user.repository";
+import { IHashProvider } from "@/shared/providers/hash.provider";
+import createHttpError from "http-errors";
+import { User } from "./user.domain";
+import { IJWTProvider } from "@/shared/providers/token.provider";
+
+export class UserService {
+
+    constructor(
+        private readonly userRepository: IUserRepository,
+        private readonly hashProvider: IHashProvider,
+        private readonly jwtProvider: IJWTProvider,
+    ) { }
+
+    async createUser(user: CreateUserDtoType): Promise<User> {
+
+        const userExists = await this.userRepository.findUserByEmail(user.email)
+
+        if (userExists) {
+            throw new createHttpError.BadRequest('User already exists')
+        }
+
+        user.password = await this.hashProvider.generateHash(user.password)
+
+        return this.userRepository.createUser(user)
+    }
+
+    async loginUser(user: LoginUserDtoType): Promise<User & { token: string }> {
+        const userExists = await this.userRepository.findUserByEmail(user.email)
+
+        if (!userExists) {
+            throw new createHttpError.BadRequest('User not found')
+        }
+
+        const isPasswordValid = await this.hashProvider.compareHash(user.password, userExists.password)
+
+        if (!isPasswordValid) {
+            throw new createHttpError.BadRequest('Invalid password')
+        }
+
+        const token = await this.jwtProvider.generateAccessToken(userExists.id)
+
+
+
+        return {
+            id: userExists.id,
+            name: userExists.name,
+            email: userExists.email,
+            token,
+            createdAt: userExists.createdAt,
+            updatedAt: userExists.updatedAt,
+        }
+    }
+
+}
