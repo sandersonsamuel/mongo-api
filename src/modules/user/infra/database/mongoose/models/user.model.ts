@@ -4,8 +4,7 @@ const userSchema = new Schema({
     name: {type: String, required: true},
     email: {type: String, required: true},
     password: {type: String, required: true},
-    createdAt: {type: Date, default: Date.now},
-    updatedAt: {type: Date, default: Date.now}
-})
+    deletedAt: {type: Date, default: null},
+}, { timestamps: true })
 
 export const UserModel = model("User", userSchema)

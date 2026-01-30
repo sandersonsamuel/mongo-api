@@ -1,17 +1,13 @@
 import { CreateUserDtoType } from "@/modules/user/user.dto";
-import { IUserRepository } from "@/modules/user/user.repository";
+import { UserRepository } from "@/modules/user/user.repository";
 import { UserModel } from "../models/user.model";
 import createHttpError from "http-errors";
 
-export class MongoUserRepository implements IUserRepository {
+export class MongoUserRepository implements UserRepository {
 
     async createUser(user: CreateUserDtoType) {
 
-        const newUser = await UserModel.create({
-            ...user,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-        });
+        const newUser = await UserModel.create(user);
 
         if (!newUser) {
             throw new createHttpError.InternalServerError("User could not be created");
@@ -35,6 +31,11 @@ export class MongoUserRepository implements IUserRepository {
     async findUserByEmail(email: string) {
         const user = await UserModel.findOne({ email })
         return user
+    }
+
+    async findManyUsersByIds(ids: string[]) {
+        const users = await UserModel.find({ _id: { $in: ids } })
+        return users
     }
 
 }

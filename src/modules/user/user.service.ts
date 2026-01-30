@@ -1,5 +1,5 @@
 import { CreateUserDtoType, LoginUserDtoType } from "@/modules/user/user.dto";
-import { IUserRepository } from "@/modules/user/user.repository";
+import { UserRepository } from "@/modules/user/user.repository";
 import { IHashProvider } from "@/shared/providers/hash.provider";
 import createHttpError from "http-errors";
 import { User } from "./user.domain";
@@ -8,7 +8,7 @@ import { IJWTProvider } from "@/shared/providers/token.provider";
 export class UserService {
 
     constructor(
-        private readonly userRepository: IUserRepository,
+        private readonly userRepository: UserRepository,
         private readonly hashProvider: IHashProvider,
         private readonly jwtProvider: IJWTProvider,
     ) { }
@@ -23,7 +23,9 @@ export class UserService {
 
         user.password = await this.hashProvider.generateHash(user.password)
 
-        return this.userRepository.createUser(user)
+        const { password, ...userWithoutPassword } = await this.userRepository.createUser(user)
+
+        return userWithoutPassword
     }
 
     async loginUser(user: LoginUserDtoType): Promise<User & { token: string }> {

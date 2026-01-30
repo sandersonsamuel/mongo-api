@@ -4,7 +4,7 @@ import { Container } from "../container";
 import { JoseTokenProvider } from "../infra/token/providers/jose.provider";
 import { JWTPayload } from "jose";
 
-export const jwtHandler = async (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const jwtProvider = Container.resolve<JoseTokenProvider>("JWTProvider")
 

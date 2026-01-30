@@ -1,15 +1,15 @@
 import { IHashProvider } from "@/shared/providers/hash.provider";
 import createHttpError from "http-errors";
 import { LoginUserDtoType } from "@/modules/user/user.dto";
-import { IUserRepository } from "@/modules/user/user.repository";
-import { IAuthRepository } from "@/modules/auth/auth.repository";
+import { UserRepository } from "@/modules/user/user.repository";
+import { AuthRepository } from "@/modules/auth/auth.repository";
 import { IJWTProvider } from "@/shared/providers/token.provider";
 
 export class AuthService {
     constructor(
-        private readonly authRepository: IAuthRepository,
+        private readonly authRepository: AuthRepository,
         private readonly hashProvider: IHashProvider,
-        private readonly userRepository: IUserRepository,
+        private readonly userRepository: UserRepository,
         private readonly tokenProvider: IJWTProvider
     ) { }
 
@@ -31,7 +31,7 @@ export class AuthService {
         const refreshToken = await this.tokenProvider.generateRefreshToken(userExists.id)
 
         await this.authRepository.createSession(userExists.id, accessToken, refreshToken)
-        
+
         return {
             accessToken,
             refreshToken
@@ -45,15 +45,15 @@ export class AuthService {
     async refreshAccessToken(refreshToken: string, userId: string) {
         const session = await this.authRepository.findByRefreshToken(refreshToken)
 
-        if (!session){
+        if (!session) {
             throw new createHttpError.NotFound("Session not found")
         }
 
-        if (session.userId !== userId){
+        if (session.userId !== userId) {
             throw new createHttpError.Unauthorized("Unauthorized")
         }
 
-        if (session.expiresIn < new Date()){
+        if (session.expiresIn < new Date()) {
             throw new createHttpError.Unauthorized("Session expired")
         }
 
@@ -65,5 +65,5 @@ export class AuthService {
             accessToken: newAccessToken
         }
     }
-        
+
 }

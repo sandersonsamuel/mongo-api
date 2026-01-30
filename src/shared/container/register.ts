@@ -7,6 +7,9 @@ import { AuthService } from "@/modules/auth/auth.service"
 import { UserService } from "@/modules/user/user.service"
 import { AuthController } from "@/modules/auth/auth.controller"
 import { UserController } from "@/modules/user/user.controller"
+import { WorkspaceService } from "@/modules/workspace/workspace.service"
+import { WorkspaceController } from "@/modules/workspace/workspace.controller"
+import { MongoWorkspaceRepository } from "@/modules/workspace/infra/database/mongoose/repositories/mongo.workspace.repository"
 
 export const registerDependencies = () => {
     const green = '\x1b[32m'
@@ -22,6 +25,9 @@ export const registerDependencies = () => {
 
     Container.register("MongoAuthRepository", () => new MongoAuthRepository())
     console.log(`${green}  ✓ MongoAuthRepository${reset}`)
+
+    Container.register("MongoWorkspaceRepository", () => new MongoWorkspaceRepository())
+    console.log(`${green}  ✓ MongoWorkspaceRepository${reset}`)
 
     // Providers
     console.log(`\n${green}${bold}[Providers]${reset}`)
@@ -41,6 +47,12 @@ export const registerDependencies = () => {
     ))
     console.log(`${green}  ✓ AuthService${reset}`)
 
+    Container.register("WorkspaceService", () => new WorkspaceService(
+        Container.resolve("MongoWorkspaceRepository"),
+        Container.resolve("MongoUserRepository")
+    ))
+    console.log(`${green}  ✓ WorkspaceService${reset}`)
+
     Container.register("UserService", () => new UserService(
         Container.resolve("MongoUserRepository"),
         Container.resolve("BCryptProvider"),
@@ -55,6 +67,11 @@ export const registerDependencies = () => {
         Container.resolve("AuthService")
     ))
     console.log(`${green}  ✓ AuthController${reset}`)
+
+    Container.register("WorkspaceController", () => new WorkspaceController(
+        Container.resolve("WorkspaceService")
+    ))
+    console.log(`${green}  ✓ WorkspaceController${reset}`)
 
     Container.register("UserController", () => new UserController(
         Container.resolve("UserService")

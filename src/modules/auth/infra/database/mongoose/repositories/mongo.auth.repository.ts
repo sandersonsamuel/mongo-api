@@ -1,10 +1,10 @@
 import { Session } from "@/modules/auth/auth.domain";
-import { IAuthRepository } from "@/modules/auth/auth.repository";
+import { AuthRepository } from "@/modules/auth/auth.repository";
 import { SessionModel } from "../models/auth.model";
 import createHttpError from "http-errors";
 
-export class MongoAuthRepository implements IAuthRepository {
-    
+export class MongoAuthRepository implements AuthRepository {
+
     async createSession(userId: string, accessToken: string, refreshToken: string): Promise<Session> {
 
         const session = await SessionModel.create({

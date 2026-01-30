@@ -5,8 +5,6 @@ const sessionSchema = new Schema({
     accessToken: { type: String, required: true },
     refreshToken: { type: String, required: true },
     expiresIn: { type: Date, required: true },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
-})
+}, { timestamps: true })
 
 export const SessionModel = model("Session", sessionSchema)
