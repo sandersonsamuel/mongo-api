@@ -5,10 +5,15 @@ import { handleInvalidJson } from "@/shared/middlewares/handle-invalid-json.midd
 import cookieParser from "cookie-parser";
 import { env } from "@/configs/env";
 import { registerDependencies } from "@/shared/container/register";
+import cors from "cors";
 
 const app = express();
 
 app.use(express.json());
+app.use(cors({
+    origin: "*",
+    credentials: true
+}))
 app.use(handleInvalidJson)
 app.use(cookieParser(env.COOKIE_SECRET))
 

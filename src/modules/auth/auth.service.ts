@@ -37,4 +37,8 @@ export class AuthService {
             refreshToken
         }
     }
+
+    async logout(userId: string) {
+        await this.authRepository.deleteSession(userId)
+    }
 }

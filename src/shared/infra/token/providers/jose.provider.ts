@@ -24,7 +24,7 @@ export class JoseTokenProvider implements IJWTProvider {
             .sign(new TextEncoder().encode(env.JWT_SECRET))
     }
 
-    async validateToken(token: string): Promise<object> {
+    async validateToken(token: string): Promise<jose.JWTPayload> {
         const { payload } = await jose.jwtVerify(token, new TextEncoder().encode(env.JWT_SECRET))
         return payload
     }

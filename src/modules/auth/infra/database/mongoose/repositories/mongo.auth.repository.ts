@@ -28,6 +28,13 @@ export class MongoAuthRepository implements IAuthRepository {
             createdAt: session.createdAt,
             updatedAt: session.updatedAt,
         }
+    }
 
+    async deleteSession(userId: string): Promise<void> {
+        const session = await SessionModel.findOneAndDelete({ userId })
+
+        if (!session) {
+            throw new createHttpError.NotFound("Session not found")
+        }
     }
 }

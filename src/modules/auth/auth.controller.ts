@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Response, Request } from "express";
 import { CreateUserRequestType, LoginUserRequestType } from "@/modules/user/user.dto";
 import { UserService } from "@/modules/user/user.service";
 import { AuthService } from "@/modules/auth/auth.service";
@@ -10,13 +10,13 @@ export class AuthController {
         private readonly authService: AuthService
     ) { }
 
-    createUser = async (req: CreateUserRequestType, res: Response) => {
+    register = async (req: CreateUserRequestType, res: Response) => {
         const { name, email, password } = req.body
         const user = await this.userService.createUser({ name, email, password })
         return res.status(201).json(user)
     }
 
-    loginUser = async (req: LoginUserRequestType, res: Response) => {
+    login = async (req: LoginUserRequestType, res: Response) => {
         const { email, password } = req.body
         const { accessToken, refreshToken } = await this.authService.login({ email, password })
 
@@ -35,6 +35,17 @@ export class AuthController {
             maxAge: 1000 * 60 * 60 * 24 * 7, // 1 semana
             signed: true
         })
+
+        return res.status(200).json({
+            success: true
+        })
+    }
+
+    logout = async (req: Request, res: Response) => {
+        res.clearCookie("accessToken")
+        res.clearCookie("refreshToken")
+
+        await this.authService.logout(req.user.userId)
 
         return res.status(200).json({
             success: true
