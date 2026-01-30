@@ -1,8 +1,8 @@
 import { IHashProvider } from "@/shared/providers/hash.provider";
 import createHttpError from "http-errors";
-import { LoginUserDtoType } from "../user/user.dto";
-import { IUserRepository } from "../user/user.repository";
-import { IAuthRepository } from "./auth.repository";
+import { LoginUserDtoType } from "@/modules/user/user.dto";
+import { IUserRepository } from "@/modules/user/user.repository";
+import { IAuthRepository } from "@/modules/auth/auth.repository";
 import { IJWTProvider } from "@/shared/providers/token.provider";
 
 export class AuthService {

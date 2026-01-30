@@ -1,6 +1,7 @@
 import { env } from "process";
-import { app } from "./app";
-import { connectMongo } from "./shared/database/mongoose";
+import { app } from "@/app";
+import { connectMongo } from "@/shared/database/mongoose";
+import { registerDependencies } from "./shared/container/register";
 
 const port = env.PORT
 const url = `http://localhost:${port}`

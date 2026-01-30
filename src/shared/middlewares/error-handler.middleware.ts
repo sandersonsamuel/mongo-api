@@ -7,6 +7,6 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
         return res.status(err.status).json({ error: err.message })
     }
 
-    console.error(err.message)
+    console.error("Erro do servidor: ", err.message)
     return res.status(500).json({ error: 'Internal server error' })
 }

@@ -1,9 +1,7 @@
 import { Response } from "express";
-import { UserService } from "../user/user.service";
-import { CreateUserRequestType, LoginUserRequestType } from "../user/user.dto";
-import { AuthService } from "./auth.service";
-import cookieParser, { CookieParseOptions } from "cookie-parser";
-import { env } from "@/configs/env";
+import { CreateUserRequestType, LoginUserRequestType } from "@/modules/user/user.dto";
+import { UserService } from "@/modules/user/user.service";
+import { AuthService } from "@/modules/auth/auth.service";
 
 export class AuthController {
 
@@ -27,6 +25,14 @@ export class AuthController {
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
             maxAge: 1000 * 60 * 60 * 24, // 1 dia
+            signed: true
+        })
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 1000 * 60 * 60 * 24 * 7, // 1 semana
             signed: true
         })
 
