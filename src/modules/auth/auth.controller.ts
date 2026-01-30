@@ -52,4 +52,21 @@ export class AuthController {
         })
     }
 
+    refreshAccessToken = async (req: Request, res: Response) => {
+        const { refreshToken } = req.signedCookies
+        const { accessToken } = await this.authService.refreshAccessToken(refreshToken, req.user.userId)
+
+        res.cookie("accessToken", accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 1000 * 60 * 60 * 24, // 1 dia
+            signed: true
+        })
+
+        return res.status(200).json({
+            success: true
+        })
+    }
+
 }

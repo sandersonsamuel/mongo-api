@@ -41,4 +41,29 @@ export class AuthService {
     async logout(userId: string) {
         await this.authRepository.deleteSession(userId)
     }
+
+    async refreshAccessToken(refreshToken: string, userId: string) {
+        const session = await this.authRepository.findByRefreshToken(refreshToken)
+
+        if (!session){
+            throw new createHttpError.NotFound("Session not found")
+        }
+
+        if (session.userId !== userId){
+            throw new createHttpError.Unauthorized("Unauthorized")
+        }
+
+        if (session.expiresIn < new Date()){
+            throw new createHttpError.Unauthorized("Session expired")
+        }
+
+        const newAccessToken = await this.tokenProvider.generateAccessToken(userId)
+
+        await this.authRepository.updateAccessToken(refreshToken, newAccessToken)
+
+        return {
+            accessToken: newAccessToken
+        }
+    }
+        
 }
