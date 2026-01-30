@@ -1,6 +1,9 @@
 import { z } from "zod";
-import {Request} from "express"
+import { Request } from "express"
 import { Role } from "@/@types/role";
+import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
+
+extendZodWithOpenApi(z);
 
 export const createWorkSpaceDto = z.object({
     name: z.string().min(3),
@@ -8,7 +11,7 @@ export const createWorkSpaceDto = z.object({
         userId: z.string(),
         role: z.enum([Role.ADMIN, Role.MEMBER]),
     })).optional(),
-})
+}).openapi("CreateWorkSpaceDto")
 
 export type CreateWorkSpaceDtoType = z.infer<typeof createWorkSpaceDto>
 

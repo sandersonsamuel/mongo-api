@@ -6,27 +6,39 @@ import cookieParser from "cookie-parser";
 import { env } from "@/configs/env";
 import { registerDependencies } from "@/shared/container/register";
 import cors from "cors";
+import { generateOpenApiDocument } from "@/shared/openapi/generator";
+import { apiReference } from '@scalar/express-api-reference';
 
 const app = express();
 
 app.use(express.json());
 app.use(cors({
-    origin: "*",
-    credentials: true
-}))
-app.use(handleInvalidJson)
-app.use(cookieParser(env.COOKIE_SECRET))
+  origin: "*",
+  credentials: true,
+}));
+app.use(handleInvalidJson);
+app.use(cookieParser(env.COOKIE_SECRET));
+
+app.get('/openapi.json', (_req, res) => {
+  res.json(generateOpenApiDocument());
+});
+
+app.use(
+  '/docs',
+  apiReference({
+    url: '/openapi.json',
+    title: 'API Mongo',
+  })
+);
 
 async function setupRoutes() {
+  registerDependencies();
 
-    //importando dps para as dependencias ja estarem todas registradas no container antes de carregar as rotas
-    registerDependencies()
-
-    const { router } = await import("./routes.js");
-    app.use(router)
-    app.use(errorHandler)
+  const { router } = await import("./routes.js");
+  app.use(router);
+  app.use(errorHandler);
 }
 
-setupRoutes()
+setupRoutes();
 
-export { app } 
+export { app };
