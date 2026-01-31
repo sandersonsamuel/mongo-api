@@ -1,4 +1,4 @@
-import { Role } from "../user/user.domain";
+import { WorkspaceUserRole } from "../user/user.domain";
 
 export interface Workspace {
     id: string;
@@ -13,5 +13,5 @@ export interface Workspace {
 
 export interface MembersWorkspace {
     userId: string
-    role: Role
+    role: WorkspaceUserRole
 }

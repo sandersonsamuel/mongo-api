@@ -30,7 +30,7 @@ registry.registerPath({
             }
         },
         400: {
-            description: "Bad request",
+            description: "Invalid body request",
             content: {
                 "application/json": {
                     schema: validationErrorSchema
@@ -68,6 +68,14 @@ registry.registerPath({
             content: {
                 "application/json": {
                     schema: workspaceDto
+                }
+            }
+        },
+        400: {
+            description: "Invalid body request",
+            content: {
+                "application/json": {
+                    schema: validationErrorSchema
                 }
             }
         },

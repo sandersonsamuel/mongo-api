@@ -7,7 +7,7 @@ export interface User {
     updatedAt: Date;
 }
 
-export enum Role {
+export enum WorkspaceUserRole {
     ADMIN = "admin",
     MEMBER = "member",
     VIEWER = "viewer"

@@ -3,7 +3,7 @@ import { InviteRepository } from "./invite.repository";
 import { CreateInviteDtoType } from "./invite.dto";
 import { WorkspaceRepository } from "@/modules/workspace/workspace.repository";
 import { UserRepository } from "../user/user.repository";
-import { Role } from "../user/user.domain";
+import { WorkspaceUserRole } from "../user/user.domain";
 
 
 export class InviteService {
@@ -21,17 +21,23 @@ export class InviteService {
             throw createHttpError.NotFound("Workspace not found");
         }
 
+        const existingInvite = await this.inviteRepository.findInviteByWorkspaceIdAndInvitedEmail(data.workspaceId, data.email);
+
+        if (existingInvite) {
+            throw createHttpError.BadRequest("Invite already exists");
+        }
+
         const user = await this.userRepository.findById(userId);
 
         if (!user) {
             throw createHttpError.NotFound("User not found");
         }
 
-        if (workspace.ownerId !== user.id && !workspace.members.some(member => member.userId === user.id && member.role.includes(Role.ADMIN))) {
+        if (workspace.ownerId !== user.id && !workspace.members.some(member => member.userId === user.id && member.role.includes(WorkspaceUserRole.ADMIN))) {
             throw createHttpError.Forbidden("User is not authorized to invite");
         }
 
-        const invite = await this.inviteRepository.create(data);
+        const invite = await this.inviteRepository.create(data, userId);
         return invite;
     };
 

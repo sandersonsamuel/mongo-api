@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { Request } from "express"
 import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
-import { Role } from "../user/user.domain";
+import { WorkspaceUserRole } from "../user/user.domain";
 
 extendZodWithOpenApi(z);
 
@@ -26,7 +26,7 @@ export const workspaceDto = z.object({
     lastEditedBy: z.string(),
     members: z.array(z.object({
         userId: z.string(),
-        role: z.enum([Role.ADMIN, Role.MEMBER, Role.VIEWER]),
+        role: z.enum([WorkspaceUserRole.ADMIN, WorkspaceUserRole.MEMBER, WorkspaceUserRole.VIEWER]),
     })),
     createdAt: z.date(),
     updatedAt: z.date(),

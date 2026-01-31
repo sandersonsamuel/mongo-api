@@ -1,12 +1,13 @@
 import { CreateInviteDto, CreateInviteResponse } from "@/modules/invite/invite.dto";
 import { registry } from "..";
 import { errorSchema } from "@/schemas/errors/error.zod.schema";
+import { validationErrorSchema } from "@/schemas/errors/validation-error.zod.schema";
 
 registry.register("CreateInviteDto", CreateInviteDto)
 
 registry.registerPath({
     method: "post",
-    path: "/invite",
+    path: "/invite/create",
     tags: ["Invite"],
     request: {
         body: {
@@ -23,6 +24,14 @@ registry.registerPath({
             content: {
                 "application/json": {
                     schema: CreateInviteResponse
+                }
+            }
+        },
+        400: {
+            description: "Invalid body request",
+            content: {
+                "application/json": {
+                    schema: validationErrorSchema
                 }
             }
         },
