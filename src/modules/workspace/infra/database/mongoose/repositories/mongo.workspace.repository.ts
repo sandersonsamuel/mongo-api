@@ -11,7 +11,8 @@ export class MongoWorkspaceRepository implements WorkspaceRepository {
         const workspaceCreated = await WorkspaceModel.create({
             name: workspace.name,
             ownerId,
-            members: workspace.members,
+            members: [],
+            lastEditedBy: ownerId,
         })
 
         if (!workspaceCreated) {
@@ -22,9 +23,47 @@ export class MongoWorkspaceRepository implements WorkspaceRepository {
             id: workspaceCreated._id.toString(),
             name: workspaceCreated.name,
             ownerId: workspaceCreated.ownerId,
+            lastEditedBy: workspaceCreated.lastEditedBy,
             members: workspaceCreated.members,
             createdAt: workspaceCreated.createdAt,
             updatedAt: workspaceCreated.updatedAt,
         }
+    }
+
+    async findById(id: string): Promise<Workspace | null> {
+        const found = await WorkspaceModel.findById(id);
+        
+        if (!found) return null;
+        
+        return {
+            id: found._id.toString(),
+            name: found.name,
+            ownerId: found.ownerId,
+            lastEditedBy: found.lastEditedBy,
+            members: found.members,
+            createdAt: found.createdAt,
+            updatedAt: found.updatedAt,
+        };
+    }
+
+    async findManyByUserId(userId: string): Promise<Workspace[]> {
+        const found = await WorkspaceModel.find({
+            $or: [
+                { ownerId: userId },
+                { members: { $in: [userId] } }
+            ]
+        });
+        
+        if (!found) return [];
+        
+        return found.map((workspace) => ({
+            id: workspace._id.toString(),
+            name: workspace.name,
+            ownerId: workspace.ownerId,
+            lastEditedBy: workspace.lastEditedBy,
+            members: workspace.members,
+            createdAt: workspace.createdAt,
+            updatedAt: workspace.updatedAt,
+        }));
     }
 }

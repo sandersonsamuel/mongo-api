@@ -13,6 +13,10 @@ const workspaceSchema = new Schema({
         type: Array,
         required: true,
     },
+    lastEditedBy: {
+        type: String,
+        required: true,
+    },
 }, { timestamps: true })
 
 export const WorkspaceModel = model("Workspace", workspaceSchema)

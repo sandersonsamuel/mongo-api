@@ -9,7 +9,7 @@ async function bootstrap() {
     await connectMongo();
 
     app.listen(port, () => {
-        console.log(`Server is running on ${url}`);
+        console.log(`Server is running \n${url}/docs`);
     });
 }
 

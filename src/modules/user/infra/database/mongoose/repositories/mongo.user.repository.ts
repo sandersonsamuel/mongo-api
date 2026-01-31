@@ -5,7 +5,7 @@ import createHttpError from "http-errors";
 
 export class MongoUserRepository implements UserRepository {
 
-    async createUser(user: CreateUserDtoType) {
+    async create(user: CreateUserDtoType) {
 
         const newUser = await UserModel.create(user);
 
@@ -23,17 +23,17 @@ export class MongoUserRepository implements UserRepository {
         };
     }
 
-    async findUserById(id: string) {
+    async findById(id: string) {
         const user = await UserModel.findById(id)
         return user
     }
 
-    async findUserByEmail(email: string) {
+    async findByEmail(email: string) {
         const user = await UserModel.findOne({ email })
         return user
     }
 
-    async findManyUsersByIds(ids: string[]) {
+    async findManyByIds(ids: string[]) {
         const users = await UserModel.find({ _id: { $in: ids } })
         return users
     }

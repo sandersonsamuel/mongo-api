@@ -15,7 +15,7 @@ export class UserService {
 
     async createUser(user: CreateUserDtoType): Promise<User> {
 
-        const userExists = await this.userRepository.findUserByEmail(user.email)
+        const userExists = await this.userRepository.findByEmail(user.email)
 
         if (userExists) {
             throw new createHttpError.BadRequest('User already exists')
@@ -23,13 +23,13 @@ export class UserService {
 
         user.password = await this.hashProvider.generateHash(user.password)
 
-        const { password, ...userWithoutPassword } = await this.userRepository.createUser(user)
+        const { password, ...userWithoutPassword } = await this.userRepository.create(user)
 
         return userWithoutPassword
     }
 
     async loginUser(user: LoginUserDtoType): Promise<User & { token: string }> {
-        const userExists = await this.userRepository.findUserByEmail(user.email)
+        const userExists = await this.userRepository.findByEmail(user.email)
 
         if (!userExists) {
             throw new createHttpError.BadRequest('User not found')

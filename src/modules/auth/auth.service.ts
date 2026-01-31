@@ -15,7 +15,7 @@ export class AuthService {
 
     async login(user: LoginUserDtoType) {
 
-        const userExists = await this.userRepository.findUserByEmail(user.email)
+        const userExists = await this.userRepository.findByEmail(user.email)
 
         if (!userExists) {
             throw new createHttpError.NotFound("User not found")

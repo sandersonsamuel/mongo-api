@@ -9,3 +9,4 @@ export const workspaceRoutes = Router()
 const workSpaceController = Container.resolve<WorkspaceController>("WorkspaceController")
 
 workspaceRoutes.post("/create", authMiddleware, validateRequest(createWorkSpaceRequest), workSpaceController.create)
+workspaceRoutes.get("/all", authMiddleware, workSpaceController.getAllByUserId)

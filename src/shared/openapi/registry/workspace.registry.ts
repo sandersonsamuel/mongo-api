@@ -1,7 +1,7 @@
-import { createWorkSpaceDto } from "@/modules/workspace/workspace.dto";
+import { createWorkSpaceDto, workspaceDto } from "@/modules/workspace/workspace.dto";
 import { errorSchema } from "@/schemas/errors/error.zod.schema";
 import { validationErrorSchema } from "@/schemas/errors/validation-error.zod.schema";
-import { registry } from ".";
+import { registry } from "..";
 
 registry.register("CreateWorkSpaceDto", createWorkSpaceDto);
 
@@ -17,7 +17,7 @@ registry.registerPath({
             }
         }
     },
-    summary: "Create a new workspace",
+    summary: "Create",
     description: "Create a new workspace",
     tags: ["Workspace"],
     responses: {
@@ -53,5 +53,31 @@ registry.registerPath({
                 }
             }
         },
+    }
+})
+
+registry.registerPath({
+    method: "get",
+    path: "/workspace/all",
+    summary: "Get all workspaces",
+    description: "Get all workspaces by user id",
+    tags: ["Workspace"],
+    responses: {
+        200: {
+            description: "Workspaces retrieved successfully",
+            content: {
+                "application/json": {
+                    schema: workspaceDto
+                }
+            }
+        },
+        401: {
+            description: "Unauthorized",
+            content: {
+                "application/json": {
+                    schema: errorSchema
+                }
+            }
+        }
     }
 })

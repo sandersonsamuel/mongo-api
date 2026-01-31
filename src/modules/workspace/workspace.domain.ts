@@ -1,4 +1,4 @@
-import { Role } from "@/@types/role";
+import { Role } from "../user/user.domain";
 
 export interface Workspace {
     id: string;
@@ -6,6 +6,7 @@ export interface Workspace {
     ownerId: string;
     members: MembersWorkspace[];
     deletedAt?: Date | null;
+    lastEditedBy: string;
     createdAt: Date;
     updatedAt: Date;
 }

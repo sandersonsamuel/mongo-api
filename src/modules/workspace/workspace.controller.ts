@@ -8,16 +8,20 @@ export class WorkspaceController {
     ) {}
 
     create = async (req: CreateWorkSpaceRequestType, res: Response) => {
-        const {name, members} = req.body
+        const {name} = req.body
         const ownerId = req.user.userId
 
-        console.log(ownerId, members, name)
+        console.log(ownerId, name)
 
         const workspace = await this.workspaceService.create({
-            name,
-            members
+            name
         }, ownerId)
 
         return res.status(201).json(workspace)
+    }
+
+    getAllByUserId = async (req: Request, res: Response) => {
+        const workspaces = await this.workspaceService.getAllByUserId(req.user.userId)
+        return res.status(200).json(workspaces)
     }
 }

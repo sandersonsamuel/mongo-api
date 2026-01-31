@@ -10,6 +10,9 @@ import { UserController } from "@/modules/user/user.controller"
 import { WorkspaceService } from "@/modules/workspace/workspace.service"
 import { WorkspaceController } from "@/modules/workspace/workspace.controller"
 import { MongoWorkspaceRepository } from "@/modules/workspace/infra/database/mongoose/repositories/mongo.workspace.repository"
+import { MongoInviteRepository } from "@/modules/invite/infra/database/mongoose/repositories/mongo.invite.repository"
+import { InviteService } from "@/modules/invite/invite.service"
+import { InviteController } from "@/modules/invite/invite.controller"
 
 export const registerDependencies = () => {
     const green = '\x1b[32m'
@@ -28,6 +31,9 @@ export const registerDependencies = () => {
 
     Container.register("MongoWorkspaceRepository", () => new MongoWorkspaceRepository())
     console.log(`${green}  ✓ MongoWorkspaceRepository${reset}`)
+
+    Container.register("inviteRepository", () => new MongoInviteRepository())
+    console.log(`${green}  ✓ inviteRepository${reset}`)
 
     // Providers
     console.log(`\n${green}${bold}[Providers]${reset}`)
@@ -60,6 +66,13 @@ export const registerDependencies = () => {
     ))
     console.log(`${green}  ✓ UserService${reset}`)
 
+    Container.register("InviteService", () => new InviteService(
+        Container.resolve("inviteRepository"),
+        Container.resolve("MongoWorkspaceRepository"),
+        Container.resolve("MongoUserRepository")
+    ))
+    console.log(`${green}  ✓ InviteService${reset}`)
+
     // Controllers
     console.log(`\n${green}${bold}[Controllers]${reset}`)
     Container.register("AuthController", () => new AuthController(
@@ -77,6 +90,11 @@ export const registerDependencies = () => {
         Container.resolve("UserService")
     ))
     console.log(`${green}  ✓ UserController${reset}`)
+
+    Container.register("InviteController", () => new InviteController(
+        Container.resolve("InviteService")
+    ))
+    console.log(`${green}  ✓ InviteController${reset}`)
 
     console.log(`\n${green}${bold}[Dependency Container]${reset} ${green}Successfully initialized!${reset}\n`)
 }

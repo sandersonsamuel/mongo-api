@@ -2,7 +2,8 @@
     "name": "api-mongo",
     "version": "1.0.0",
     "scripts": {
-        "dev": "tsx --watch ./src/server.ts"
+        "dev": "tsx --watch ./src/server.ts",
+        "generate": "node ./scripts/generate-module.js"
     },
     "dependencies": {
         "@asteasolutions/zod-to-openapi": "^8.4.0",

@@ -6,3 +6,9 @@ export interface User {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export enum Role {
+    ADMIN = "admin",
+    MEMBER = "member",
+    VIEWER = "viewer"
+}
